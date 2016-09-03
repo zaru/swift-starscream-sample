@@ -11,7 +11,14 @@ import Starscream
 
 class ViewController: UIViewController, WebSocketDelegate {
     
+    
     let socket = WebSocket(url: NSURL(string: "ws://local.talkbattle.com:3000/cable")!)
+    
+    @IBOutlet weak var btn: UIButton!
+    @IBAction func btnClick(sender: AnyObject) {
+        print("click button")
+        socket.writeString("{\"command\":\"message\",\"identifier\":\"{\\\"channel\\\":\\\"RoomChannel\\\"}\",\"data\":\"{\\\"data\\\":{\\\"room_id\\\":\\\"2\\\",\\\"user_id\\\":\\\"5\\\",\\\"comment\\\":\\\"fuga\\\"},\\\"action\\\":\\\"speak\\\"}\"}")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +26,7 @@ class ViewController: UIViewController, WebSocketDelegate {
         
         socket.delegate = self
         socket.connect()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,6 +36,7 @@ class ViewController: UIViewController, WebSocketDelegate {
 
     func websocketDidConnect(socket: WebSocket) {
         print("websocket is connected")
+        socket.writeString("{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"RoomChannel\\\"}\"}")
     }
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
         print("websocket is disconnected: \(error?.localizedDescription)")
